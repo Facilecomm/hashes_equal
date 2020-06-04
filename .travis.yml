@@ -1,0 +1,24 @@
+---
+sudo: false
+dist: xenial
+language: ruby
+cache: bundler
+rvm:
+  - 2.6.6
+  - 2.7.0
+before_install:
+  - gem install bundler -v 2.1.4
+  - bundle update --bundler
+  - bundle --version
+env:
+  - build_type=ruby
+script:
+  - cat Gemfile.lock
+  - bundle exec rubocop -V
+  - bundle exec rubocop -S
+  - bundle exec rubocop -d
+  - RAILS_ENV=test bundle exec rake test
+
+after_script:
+  - ps -ejf --forest
+  - ssh-agent -k

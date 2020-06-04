@@ -1,0 +1,125 @@
+require:
+  - rubocop-performance
+
+AllCops:
+  TargetRubyVersion: 2.6
+
+Layout/EmptyLinesAroundAttributeAccessor:
+  Enabled: true
+
+Layout/HeredocIndentation:
+  Enabled: true
+
+Layout/LineLength:
+  Max: 80
+  Exclude:
+    - 'config/initializers/devise.rb'
+    - 'config/initializers/content_security_policy.rb'
+    - 'config/environments/production.rb'
+
+Layout/MultilineArrayLineBreaks:
+  Enabled: true
+
+Layout/MultilineHashKeyLineBreaks:
+  Enabled: true
+
+# Enabled means "no space" around call operators
+Layout/SpaceAroundMethodCallOperator:
+  Enabled: true
+
+Lint/DeprecatedOpenSSLConstant:
+  Enabled: true
+
+Lint/MixedRegexpCaptureTypes:
+  Enabled: true
+
+Lint/StructNewOverride:
+  Enabled: true
+
+# Meaning you cannot: raise Exception
+Lint/RaiseException:
+  Enabled: true
+
+Metrics/ClassLength:
+  Max: 110
+
+# Would give us false positives on all private(*delegate)
+Style/AccessModifierDeclarations:
+  Enabled: false
+
+Style/RegexpLiteral:
+  EnforcedStyle: percent_r
+
+Style/ClassAndModuleChildren:
+  Enabled: false
+
+Style/DateTime:
+  Enabled: false
+
+Style/Documentation:
+  Enabled: false
+
+Style/ExponentialNotation:
+  Enabled: true
+
+# Style/MixinUsage:
+#   Exclude:
+#     - 'features/step_definitions/has_orders.rb'
+#     - 'features/support/ember.rb'
+
+# Currently gives false positive with e.g. generator.date.strftime '%Y%m%d'
+# https://github.com/bbatsov/rubocop/issues/5398
+#
+Style/FormatStringToken:
+  Enabled: false
+
+Style/HashEachMethods:
+  Enabled: true
+
+Style/HashTransformKeys:
+  Enabled: true
+
+Style/HashTransformValues:
+  Enabled: true
+
+Style/NumericPredicate:
+  EnforcedStyle: comparison
+
+Style/RedundantRegexpCharacterClass:
+  Enabled: true
+
+Style/RedundantRegexpEscape:
+  Enabled: true
+
+Style/SlicingWithRange:
+  Enabled: true
+
+# Metrics/ClassLength:
+#   Max: 250
+
+Metrics/BlockLength:
+  Exclude:
+    - 'sbo_test_assertions.gemspec'
+
+# Naming/HeredocDelimiterNaming:
+#   Exclude:
+#     - 'test/**/*'
+
+# Naming/MemoizedInstanceVariableName:
+#   Exclude:
+#     - 'test/**/*'
+
+# Naming/UncommunicativeMethodParamName:
+#   AllowedNames:
+#     - id
+#     - at
+#     - to
+    # - pp
+    # - cb
+  # Exclude:
+  #   - 'test/**/*'
+  #   - 'features/**/*'
+
+# Performance/UnfreezeString:
+#   Exclude:
+#     - 'test/**/*'

@@ -7,12 +7,15 @@ gemspec
 
 gem 'minitest', '~> 5.0'
 gem 'rake', '~> 12.0'
-gem(
-  'sbo_assertable',
-  git: 'https://github.com/Facilecomm/sbo_assertable',
-  require: false,
-  ref: '5e732e4b79c81045c80bffdc5ab18e8d906c9f52'
-)
+
+source 'https://github.com/Facilecomm/sbo_assertable' do
+  gem(
+    'sbo_assertable',
+    git: 'https://github.com/Facilecomm/sbo_assertable',
+    require: false,
+    ref: '5e732e4b79c81045c80bffdc5ab18e8d906c9f52'
+  )
+end
 
 group :test do
   gem(

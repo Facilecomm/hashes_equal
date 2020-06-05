@@ -63,7 +63,10 @@ module SboTestAssertions
     end
 
     def spurious_value_message(key, exp_val)
-      "spurious value #{ANSI.red { exp_val.inspect }} for #{key} was not expected"
+      [
+        "spurious value #{ANSI.red { exp_val.inspect }}",
+        "for #{key} was not expected"
+      ].join(' ')
     end
 
     def value_disagreement_message(key, exp_val, act_val)

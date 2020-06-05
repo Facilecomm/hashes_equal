@@ -7,7 +7,7 @@ class HashCompareHelperTest < Minitest::Test
   include SboTestAssertions::HashCompareHelper
 
   def test_raises_if_expectation_is_not_a_hash
-    assert_raises SboTestAssertions::HashDiffDisplayer::ExpectationMustBeHash do
+    assert_raises hash_diff_displayer_klass::ExpectationMustBeHash do
       assert_hashes_equal(
         '',
         {}
@@ -16,7 +16,7 @@ class HashCompareHelperTest < Minitest::Test
   end
 
   def test_raises_if_actual_value_is_not_a_hash
-    assert_raises SboTestAssertions::HashDiffDisplayer::ActualValueMustBeAHash do
+    assert_raises hash_diff_displayer_klass::ActualValueMustBeAHash do
       assert_hashes_equal(
         {},
         ''
@@ -30,6 +30,23 @@ class HashCompareHelperTest < Minitest::Test
 
     assert_hashes_mismatch(
       message: missing_value_message('a', 1)
+    )
+  end
+
+  def test_missing_key_non_verbose
+    @expected_hash = { a: 1 }
+    @actual_hash = {}
+
+    error = assert_raises Minitest::Assertion do
+      assert_hashes_equal(
+        expected_hash,
+        actual_hash,
+        verbose: false
+      )
+    end
+    assert_equal(
+      ANSI.white { "\n" + missing_value_message('a', 1) },
+      error.message
     )
   end
 
@@ -82,9 +99,34 @@ class HashCompareHelperTest < Minitest::Test
     )
   end
 
+  def test_match
+    @expected_hash = { a: 0, b: 1 }
+    @actual_hash = { a: 0, b: 1 }
+
+    assert_hashes_match
+  end
+
+  def test_deep_match
+    @expected_hash = {
+      a: 0,
+      b: {
+        c: {
+          d: 1
+        }
+      }
+    }
+    @actual_hash = @expected_hash.dup
+
+    assert_hashes_match
+  end
+
   private
 
   attr_reader :expected_hash, :actual_hash, :actual_diff
+
+  def hash_diff_displayer_klass
+    SboTestAssertions::HashDiffDisplayer
+  end
 
   def assert_hashes_mismatch(message:)
     assert_hashes_equal(

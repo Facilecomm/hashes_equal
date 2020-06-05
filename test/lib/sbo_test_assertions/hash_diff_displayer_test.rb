@@ -5,7 +5,7 @@ require 'sbo_test_assertions/hash_diff_displayer'
 
 class SboTestAssertionsHashDiffDisplayerTest < Minitest::Test
   def test_raises_if_expectation_is_not_a_hash
-    assert_raises SboTestAssertions::HashDiffDisplayer::ExpectationMustBeHash do
+    assert_raises hash_diff_displayer_klass::ExpectationMustBeHash do
       SboTestAssertions::HashDiffDisplayer.new(
         expected: '',
         actual: {}
@@ -14,7 +14,7 @@ class SboTestAssertionsHashDiffDisplayerTest < Minitest::Test
   end
 
   def test_raises_if_actual_value_is_not_a_hash
-    assert_raises SboTestAssertions::HashDiffDisplayer::ActualValueMustBeAHash do
+    assert_raises hash_diff_displayer_klass::ActualValueMustBeAHash do
       SboTestAssertions::HashDiffDisplayer.new(
         expected: {},
         actual: ''
@@ -87,10 +87,8 @@ class SboTestAssertionsHashDiffDisplayerTest < Minitest::Test
       actual: actual_hash
     )
     # '*' is not a valid Hashdiff operator
-    diff_displayer.stubs(
-      perform_diff_computation: [['*', 'b', 1]]
-    )
-    error = assert_raises SboTestAssertions::HashDiffDisplayer::UnprocessableHashdiff do
+    diff_displayer.stubs perform_diff_computation: [['*', 'b', 1]]
+    error = assert_raises hash_diff_displayer_klass::UnprocessableHashdiff do
       diff_displayer.call
     end
     assert_equal(
@@ -102,6 +100,10 @@ class SboTestAssertionsHashDiffDisplayerTest < Minitest::Test
   private
 
   attr_reader :expected_hash, :actual_hash, :actual_diff
+
+  def hash_diff_displayer_klass
+    SboTestAssertions::HashDiffDisplayer
+  end
 
   def assert_displayable_diff(expected_diff)
     compute_diff

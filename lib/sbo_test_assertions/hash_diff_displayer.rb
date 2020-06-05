@@ -1,8 +1,11 @@
-  # frozen_string_literal: true
+# frozen_string_literal: true
+
+require 'sbo_assertable/assertable'
+require 'hashdiff'
 
 module SboTestAssertions
   class HashDiffDisplayer
-    include Assertable
+    include SboAssertable::Assertable
 
     class ExpectationMustBeHash < ArgumentError; end
     class ActualValueMustBeAHash < ArgumentError; end

@@ -19,6 +19,7 @@ PATH
       ansi (~> 1.5)
       diffy (~> 3.3)
       hashdiff (~> 1.0, >= 1.0.1)
+      sbo_assertable
 
 GEM
   remote: https://rubygems.org/

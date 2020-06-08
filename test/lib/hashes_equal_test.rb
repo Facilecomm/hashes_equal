@@ -2,8 +2,8 @@
 
 require 'test_helper'
 
-class SboTestAssertionsTest < Minitest::Test
+class HashesEqualTest < Minitest::Test
   def test_that_it_has_a_version_number
-    refute_nil ::SboTestAssertions::VERSION
+    refute_nil ::HashesEqual::VERSION
   end
 end

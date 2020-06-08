@@ -99,7 +99,7 @@ Style/SlicingWithRange:
 
 Metrics/BlockLength:
   Exclude:
-    - 'sbo_test_assertions.gemspec'
+    - 'hashes_equal.gemspec'
 
 # Naming/HeredocDelimiterNaming:
 #   Exclude:

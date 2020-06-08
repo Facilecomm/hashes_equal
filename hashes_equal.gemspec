@@ -1,16 +1,16 @@
 # frozen_string_literal: true
 
-require_relative 'lib/sbo_test_assertions/version'
+require_relative 'lib/hashes_equal/version'
 
 Gem::Specification.new do |spec|
-  spec.name          = 'sbo_test_assertions'
-  spec.version       = SboTestAssertions::VERSION
+  spec.name          = 'hashes_equal'
+  spec.version       = HashesEqual::VERSION
   spec.authors       = ['Shippingbo']
   spec.email         = ['tech@facilecomm.com']
 
-  spec.summary       = 'Extend MiniTest assertions'
-  spec.description   = 'For example: assert_hashes_equal'
-  spec.homepage      = 'https://github.com/Facilecomm/sbo_test_assertions'
+  spec.summary       = 'MiniTest style assertion to compare hashes.'
+  spec.description   = 'Provides an assertion to test for hashes equality.'
+  spec.homepage      = 'https://github.com/Facilecomm/hashes_equal'
   spec.license       = 'MIT'
   spec.required_ruby_version = Gem::Requirement.new('>= 2.6.0')
 
@@ -33,9 +33,8 @@ Gem::Specification.new do |spec|
   spec.require_paths = ['lib']
 
   spec.add_dependency 'ansi', '~> 1.5'
-  spec.add_dependency 'diffy', '~> 3.3' # des idees de genie
+  spec.add_dependency 'assertable'
   spec.add_dependency 'hashdiff', '~> 1.0', '>= 1.0.1'
-  spec.add_dependency 'sbo_assertable'
 
   spec.add_development_dependency 'bundler', '~> 2.1', '>= 2.1.4'
   spec.add_development_dependency 'byebug', '~> 11.1'

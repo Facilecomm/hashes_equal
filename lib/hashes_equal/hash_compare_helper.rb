@@ -1,8 +1,8 @@
 # frozen_string_literal: true
 
-require 'sbo_test_assertions/hash_diff_displayer'
+require 'hashes_equal/hash_diff_displayer'
 
-module SboTestAssertions
+module HashesEqual
   module HashCompareHelper
     def assert_hashes_equal(expected, actual, verbose: true)
       displayable_diff = HashDiffDisplayer.new(

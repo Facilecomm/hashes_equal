@@ -19,15 +19,13 @@ unless running_from_guard?
     SimpleCov.minimum_coverage_by_file 100
   end
 
-  require 'sbo_coverage_helper'
   SimpleCov.at_exit do
     SimpleCov.result.format!
-    SboCoverageHelper::CoverageEvaluator.new.call
   end
 end
 
 $LOAD_PATH.unshift File.expand_path('../lib', __dir__)
-require 'sbo_test_assertions'
+require 'hashes_equal'
 
 require 'minitest/autorun'
 require 'byebug'

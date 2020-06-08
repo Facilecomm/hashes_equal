@@ -1,25 +1,23 @@
 # frozen_string_literal: true
 
 require 'test_helper'
-require 'sbo_test_assertions/hash_compare_helper'
+require 'hashes_equal/hash_diff_displayer'
 
-class HashCompareHelperTest < Minitest::Test
-  include SboTestAssertions::HashCompareHelper
-
+class HashesEqualHashDiffDisplayerTest < Minitest::Test
   def test_raises_if_expectation_is_not_a_hash
     assert_raises hash_diff_displayer_klass::ExpectationMustBeHash do
-      assert_hashes_equal(
-        '',
-        {}
+      HashesEqual::HashDiffDisplayer.new(
+        expected: '',
+        actual: {}
       )
     end
   end
 
   def test_raises_if_actual_value_is_not_a_hash
     assert_raises hash_diff_displayer_klass::ActualValueMustBeAHash do
-      assert_hashes_equal(
-        {},
-        ''
+      HashesEqual::HashDiffDisplayer.new(
+        expected: {},
+        actual: ''
       )
     end
   end
@@ -27,50 +25,32 @@ class HashCompareHelperTest < Minitest::Test
   def test_missing_key
     @expected_hash = { a: 1 }
     @actual_hash = {}
-
-    assert_hashes_mismatch(
-      message: missing_value_message('a', 1)
-    )
-  end
-
-  def test_missing_key_non_verbose
-    @expected_hash = { a: 1 }
-    @actual_hash = {}
-
-    error = assert_raises Minitest::Assertion do
-      assert_hashes_equal(
-        expected_hash,
-        actual_hash,
-        verbose: false
-      )
-    end
-    assert_equal(
-      ANSI.white { "\n" + missing_value_message('a', 1) },
-      error.message
+    assert_displayable_diff(
+      missing_value_message('a', 1)
     )
   end
 
   def test_spurious_key
     @expected_hash = {}
     @actual_hash = { a: 1 }
-    assert_hashes_mismatch(
-      message: spurious_value_message('a', 1)
+    assert_displayable_diff(
+      spurious_value_message('a', 1)
     )
   end
 
   def test_disagreement
     @expected_hash = { a: 0 }
     @actual_hash = { a: 1 }
-    assert_hashes_mismatch(
-      message: value_disagreement_message('a', 0, 1)
+    assert_displayable_diff(
+      value_disagreement_message('a', 0, 1)
     )
   end
 
   def test_both_spurious_and_missing_key
     @expected_hash = { a: 1 }
     @actual_hash = { b: 2 }
-    assert_hashes_mismatch(
-      message: [
+    assert_displayable_diff(
+      [
         missing_value_message('a', 1),
         spurious_value_message('b', 2)
       ].join("\n")
@@ -80,8 +60,8 @@ class HashCompareHelperTest < Minitest::Test
   def test_both_spurious_and_disagreement
     @expected_hash = { a: 1 }
     @actual_hash = { a: 0, b: 2 }
-    assert_hashes_mismatch(
-      message: [
+    assert_displayable_diff(
+      [
         value_disagreement_message('a', 1, 0),
         spurious_value_message('b', 2)
       ].join("\n")
@@ -91,44 +71,29 @@ class HashCompareHelperTest < Minitest::Test
   def test_both_missing_and_disagreement
     @expected_hash = { a: 0, b: 1 }
     @actual_hash = { a: 2 }
-    assert_hashes_mismatch(
-      message: [
+    assert_displayable_diff(
+      [
         missing_value_message('b', 1),
         value_disagreement_message('a', 0, 2)
       ].join("\n")
     )
   end
 
-  def test_match
+  def test_raises_if_hash_diff_uses_unexpected_operator
     @expected_hash = { a: 0, b: 1 }
-    @actual_hash = { a: 0, b: 1 }
-
-    assert_hashes_match
-  end
-
-  def test_deep_match
-    @expected_hash = {
-      a: 0,
-      b: {
-        c: {
-          d: 1
-        }
-      }
-    }
-    @actual_hash = @expected_hash.dup
-
-    assert_hashes_match
-  end
-
-  def test_disagreement_in_the_deep
-    @expected_hash = {
-      a: { b: 1, c: 2 }
-    }
-    @actual_hash = {
-      a: { b: 1, c: 3 }
-    }
-    assert_hashes_mismatch(
-      message: value_disagreement_message('a.c', 2, 3)
+    @actual_hash = { a: 2 }
+    diff_displayer = HashesEqual::HashDiffDisplayer.new(
+      expected: expected_hash,
+      actual: actual_hash
+    )
+    # '*' is not a valid Hashdiff operator
+    diff_displayer.stubs perform_diff_computation: [['*', 'b', 1]]
+    error = assert_raises hash_diff_displayer_klass::UnprocessableHashdiff do
+      diff_displayer.call
+    end
+    assert_equal(
+      '["*", "b", 1]',
+      error.message
     )
   end
 
@@ -137,26 +102,7 @@ class HashCompareHelperTest < Minitest::Test
   attr_reader :expected_hash, :actual_hash, :actual_diff
 
   def hash_diff_displayer_klass
-    SboTestAssertions::HashDiffDisplayer
-  end
-
-  def assert_hashes_mismatch(message:)
-    assert_hashes_equal(
-      expected_hash,
-      actual_hash
-    )
-  rescue Minitest::Assertion => e
-    assert_equal(
-      (ANSI.white { "\n" + message } + '.').split("\n"),
-      e.message.split("\n")[0..-3]
-    )
-  end
-
-  def assert_hashes_match
-    assert_hashes_equal(
-      expected_hash,
-      actual_hash
-    )
+    HashesEqual::HashDiffDisplayer
   end
 
   def assert_displayable_diff(expected_diff)
@@ -168,9 +114,9 @@ class HashCompareHelperTest < Minitest::Test
   end
 
   def compute_diff
-    @actual_diff = assert_hashes_equal(
-      expected_hash,
-      actual_hash
+    @actual_diff = HashesEqual::HashDiffDisplayer.new(
+      expected: expected_hash,
+      actual: actual_hash
     ).call
   end
 

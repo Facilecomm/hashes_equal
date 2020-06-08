@@ -1,36 +1,20 @@
-GIT
-  remote: https://github.com/Facilecomm/sbo_assertable
-  revision: 5e732e4b79c81045c80bffdc5ab18e8d906c9f52
-  ref: 5e732e4b79c81045c80bffdc5ab18e8d906c9f52
-  specs:
-    sbo_assertable (0.1.0)
-
-GIT
-  remote: https://github.com/Facilecomm/sbo_coverage_helper
-  revision: 7ad5214e2c34d9b6b8c29a6a7d6a22caad429db8
-  ref: 7ad5214e2c34d9b6b8c29a6a7d6a22caad429db8
-  specs:
-    sbo_coverage_helper (0.1.0)
-
 PATH
   remote: .
   specs:
-    sbo_test_assertions (0.1.0)
+    hashes_equal (0.1.0)
       ansi (~> 1.5)
-      diffy (~> 3.3)
+      assertable
       hashdiff (~> 1.0, >= 1.0.1)
-      sbo_assertable
 
 GEM
   remote: https://rubygems.org/
-  remote: https://github.com/Facilecomm/sbo_assertable/
   specs:
     ansi (1.5.0)
+    assertable (0.1.1)
     ast (2.4.0)
     builder (3.2.4)
     byebug (11.1.3)
     coderay (1.1.3)
-    diffy (3.3.0)
     docile (1.3.2)
     ffi (1.13.0)
     formatador (0.2.5)
@@ -107,6 +91,7 @@ DEPENDENCIES
   byebug (~> 11.1)
   guard (~> 2.16)
   guard-minitest (~> 2.4)
+  hashes_equal!
   minitest (~> 5.0)
   minitest-reporters (~> 1.4)
   mocha (~> 1.11)
@@ -114,9 +99,6 @@ DEPENDENCIES
   rake (~> 12.0)
   rubocop (~> 0.85)
   rubocop-performance (~> 1.5)
-  sbo_assertable!
-  sbo_coverage_helper!
-  sbo_test_assertions!
   simplecov (~> 0.18.5)
 
 BUNDLED WITH

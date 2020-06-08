@@ -38,6 +38,9 @@ end
           Actual: {:a=>{:b=>1, :c=>3}}
         hashes_equal/lib/hashes_equal/hash_compare_helper.rb:13:in `assert_hashes_equal'
 ```
+
+Underneath, [Hashdiff](https://github.com/liufengyun/hashdiff) is used to perform the comparison.
+
 ## Installation
 
 Add this line to your application's Gemfile:

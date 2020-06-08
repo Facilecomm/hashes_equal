@@ -120,6 +120,18 @@ class HashCompareHelperTest < Minitest::Test
     assert_hashes_match
   end
 
+  def test_disagreement_in_the_deep
+    @expected_hash = {
+      a: { b: 1, c: 2 }
+    }
+    @actual_hash = {
+      a: { b: 1, c: 3 }
+    }
+    assert_hashes_mismatch(
+      message: value_disagreement_message('a.c', 2, 3)
+    )
+  end
+
   private
 
   attr_reader :expected_hash, :actual_hash, :actual_diff

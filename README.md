@@ -109,6 +109,8 @@ Bug reports and pull requests are welcome on GitHub at https://github.com/Facile
 ## Credit
 Original idea and initial version of the code by [Robert Dober](https://github.com/RobertDober).
 
+Actual hashes comparison is performed using [Hashdiff](https://github.com/liufengyun/hashdiff).
+
 ## License
 
 The gem is available as open source under the terms of the [MIT License](https://opensource.org/licenses/MIT).

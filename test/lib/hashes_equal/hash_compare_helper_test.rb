@@ -159,20 +159,20 @@ class HashCompareHelperTest < Minitest::Test
     )
   end
 
-  def assert_displayable_diff(expected_diff)
-    compute_diff
-    assert_equal(
-      ANSI.white { "\n" + expected_diff },
-      actual_diff
-    )
-  end
+  # def assert_displayable_diff(expected_diff)
+  #   compute_diff
+  #   assert_equal(
+  #     ANSI.white { "\n" + expected_diff },
+  #     actual_diff
+  #   )
+  # end
 
-  def compute_diff
-    @actual_diff = assert_hashes_equal(
-      expected_hash,
-      actual_hash
-    ).call
-  end
+  # def compute_diff
+  #   @actual_diff = assert_hashes_equal(
+  #     expected_hash,
+  #     actual_hash
+  #   ).call
+  # end
 
   def missing_value_message(key, exp_val)
     [

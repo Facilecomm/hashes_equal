@@ -41,6 +41,43 @@ end
 
 Underneath, [Hashdiff](https://github.com/liufengyun/hashdiff) is used to perform the comparison.
 
+You may also use `assert_enumerable_equal` from `EnumerableCompareHelper`:
+```ruby
+  def test_disagreement_in_arrays
+    expected_beatles = [
+      { firstname: 'John', lastname: 'Lennon' },
+      { firstname: 'Paul', lastname: 'McCartney' },
+      { firstname: 'Ringo', lastname: 'Starr' },
+      { firstname: 'George', lastname: 'Harrison' }
+    ]
+    actual_beatles = [
+      { firstname: 'John', lastname: 'Lennon' },
+      { firstname: 'Paul', lastname: 'McCartney' },
+      { firstname: 'Ringo', lastname: nil },
+      { firstname: 'George', lastname: 'Harrison' }
+    ]
+
+    assert_enumerable_equal(
+      expected_beatles,
+      actual_beatles
+    )
+  end
+```
+```bash
+  test_disagreement_in_arrays                                     FAIL (0.00s)
+        
+        actual value for [2] is missing, expected was
+        	{:firstname=>"Ringo", :lastname=>"Starr"}
+        spurious value {:firstname=>"Ringo", :lastname=>nil} for [2] was not expected.
+        --- expected
+        +++ actual
+        @@ -1 +1 @@
+        -[{:firstname=>"John", :lastname=>"Lennon"}, {:firstname=>"Paul", :lastname=>"McCartney"}, {:firstname=>"Ringo", :lastname=>"Starr"}, {:firstname=>"George", :lastname=>"Harrison"}]
+        +[{:firstname=>"John", :lastname=>"Lennon"}, {:firstname=>"Paul", :lastname=>"McCartney"}, {:firstname=>"Ringo", :lastname=>nil}, {:firstname=>"George", :lastname=>"Harrison"}]
+        hashes_equal/lib/hashes_equal/enumerable_compare_helper.rb:13:in `assert_enumerable_equal'
+```
+The quality of the results you will get, will depend on Hashdiff ability to process the Enumerable you are comparing.
+
 ## Installation
 
 Add this line to your application's Gemfile:
@@ -95,6 +132,43 @@ end
           Actual: {:a=>{:b=>1, :c=>3}}
         hashes_equal/lib/hashes_equal/hash_compare_helper.rb:13:in `assert_hashes_equal'
 ```
+
+You may also use `assert_enumerable_equal` from `EnumerableCompareHelper`:
+```ruby
+  def test_disagreement_in_arrays
+    expected_beatles = [
+      { firstname: 'John', lastname: 'Lennon' },
+      { firstname: 'Paul', lastname: 'McCartney' },
+      { firstname: 'Ringo', lastname: 'Starr' },
+      { firstname: 'George', lastname: 'Harrison' }
+    ]
+    actual_beatles = [
+      { firstname: 'John', lastname: 'Lennon' },
+      { firstname: 'Paul', lastname: 'McCartney' },
+      { firstname: 'Ringo', lastname: nil },
+      { firstname: 'George', lastname: 'Harrison' }
+    ]
+
+    assert_enumerable_equal(
+      expected_beatles,
+      actual_beatles
+    )
+  end
+```
+```bash
+  test_disagreement_in_arrays                                     FAIL (0.00s)
+        
+        actual value for [2] is missing, expected was
+        	{:firstname=>"Ringo", :lastname=>"Starr"}
+        spurious value {:firstname=>"Ringo", :lastname=>nil} for [2] was not expected.
+        --- expected
+        +++ actual
+        @@ -1 +1 @@
+        -[{:firstname=>"John", :lastname=>"Lennon"}, {:firstname=>"Paul", :lastname=>"McCartney"}, {:firstname=>"Ringo", :lastname=>"Starr"}, {:firstname=>"George", :lastname=>"Harrison"}]
+        +[{:firstname=>"John", :lastname=>"Lennon"}, {:firstname=>"Paul", :lastname=>"McCartney"}, {:firstname=>"Ringo", :lastname=>nil}, {:firstname=>"George", :lastname=>"Harrison"}]
+```
+
+Note that `assert_hashes_equal` will only work with Hashes while `assert_enumerable_equal` will accept any two Enumerable (but might or might not be able to compare them depending on their actual interface).
 
 ## Development
 

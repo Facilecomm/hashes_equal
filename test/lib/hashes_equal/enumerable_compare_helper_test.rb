@@ -42,19 +42,24 @@ class EnumerableCompareHelperTest < Minitest::Test
     )
   end
 
+  THEORETICAL_BEATLES = [
+    { firstname: 'John', lastname: 'Lennon' },
+    { firstname: 'Paul', lastname: 'McCartney' },
+    { firstname: 'Ringo', lastname: 'Starr' },
+    { firstname: 'George', lastname: 'Harrison' }
+  ].freeze
+
+  ALTERNATIVE_BEATLES = [
+    { firstname: 'John', lastname: 'Lennon' },
+    { firstname: 'Paul', lastname: 'McCartney' },
+    { firstname: 'Ringo', lastname: 'Starr' },
+    { firstname: 'George', lastname: 'Harrison' }
+  ].freeze
+
+  # rubocop:disable Metrics/MethodLength
   def test_disagreement_in_arrays
-    expected_beatles = [
-      { firstname: 'John', lastname: 'Lennon' },
-      { firstname: 'Paul', lastname: 'McCartney' },
-      { firstname: 'Ringo', lastname: 'Starr' },
-      { firstname: 'George', lastname: 'Harrison' }
-    ]
-    actual_beatles = [
-      { firstname: 'John', lastname: 'Lennon' },
-      { firstname: 'Paul', lastname: 'McCartney' },
-      { firstname: 'Ringo', lastname: nil },
-      { firstname: 'George', lastname: 'Harrison' }
-    ]
+    expected_beatles = THEORETICAL_BEATLES
+    actual_beatles = ALTERNATIVE_BEATLES
 
     begin
       assert_enumerable_equal(
@@ -72,6 +77,7 @@ class EnumerableCompareHelperTest < Minitest::Test
       )
     end
   end
+  # rubocop:enable Metrics/MethodLength
 
   def test_missing_key_non_verbose
     @expected_enum = { a: 1 }

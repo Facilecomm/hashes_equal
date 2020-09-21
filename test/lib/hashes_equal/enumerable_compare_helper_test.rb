@@ -42,6 +42,37 @@ class EnumerableCompareHelperTest < Minitest::Test
     )
   end
 
+  def test_disagreement_in_arrays
+    expected_beatles = [
+      { firstname: 'John', lastname: 'Lennon' },
+      { firstname: 'Paul', lastname: 'McCartney' },
+      { firstname: 'Ringo', lastname: 'Starr' },
+      { firstname: 'George', lastname: 'Harrison' }
+    ]
+    actual_beatles = [
+      { firstname: 'John', lastname: 'Lennon' },
+      { firstname: 'Paul', lastname: 'McCartney' },
+      { firstname: 'Ringo', lastname: nil },
+      { firstname: 'George', lastname: 'Harrison' }
+    ]
+
+    begin
+      assert_enumerable_equal(
+        expected_beatles,
+        actual_beatles
+      )
+    rescue Minitest::Assertion => e
+      assert_equal(
+        "-#{expected_beatles}",
+        e.message.split("\n").last(2).first
+      )
+      assert_equal(
+        "+#{actual_beatles}",
+        e.message.split("\n").last
+      )
+    end
+  end
+
   def test_missing_key_non_verbose
     @expected_enum = { a: 1 }
     @actual_enum = {}

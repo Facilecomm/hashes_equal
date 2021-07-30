@@ -80,7 +80,7 @@ class HashesEqualTimeCoarsernerTest < Minitest::Test
 
   private
 
-  def make_timed_hash
+  def make_timed_hash(time)
     {
       donut_baking: {
         started_at: time,

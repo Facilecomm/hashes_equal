@@ -122,8 +122,8 @@ class EnumerableCompareHelperTest < Minitest::Test
   end
 
   def test_time_disagreement
-    time = Time.at(1_046_684_800, 123_456_789, :nsec)
-    other_time = Time.at(1_046_684_800, 999, :nsec)
+    time = Time.at(1_046_684_800, 123_456_789, :nsec, in: '+00:00')
+    other_time = Time.at(1_046_684_800, 999, :nsec, in: '+00:00')
     @expected_enum = { created_at: time }
     @actual_enum = { created_at: other_time }
     @did_raise = false
@@ -139,7 +139,7 @@ class EnumerableCompareHelperTest < Minitest::Test
         [
           'No visible difference in the Hash#inspect output.',
           'You should look at the implementation of #== on Hash or its members.', # rubocop:disable Layout/LineLength
-          '{:created_at=>2003-03-03 10:46:40 +0100}'
+          '{:created_at=>2003-03-03 09:46:40 +0000}'
         ],
         actual_split_message
       )

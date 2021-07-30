@@ -3,6 +3,7 @@ require:
 
 AllCops:
   TargetRubyVersion: 2.6
+  NewCops: enable
 
 Layout/EmptyLinesAroundAttributeAccessor:
   Enabled: true
@@ -93,6 +94,9 @@ Style/RedundantRegexpEscape:
 
 Style/SlicingWithRange:
   Enabled: true
+
+Style/StringConcatenation:
+  Enabled: false
 
 # Metrics/ClassLength:
 #   Max: 250

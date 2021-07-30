@@ -36,7 +36,6 @@ class HashesEqualTimeCoarsernerTest < Minitest::Test
     )
   end
 
-  # rubocop:disable Metrics/AbcSize
   def test_usec_coarsening_floors_out_nsec_but_keeps_usec_with_hash
     time = Time.at(1_046_684_800, 123_456_789, :nsec)
     timed_hash = make_timed_hash time
@@ -55,9 +54,7 @@ class HashesEqualTimeCoarsernerTest < Minitest::Test
     # Other fields are still untouched
     assert_equal 180, coarsened_timed_hash[:donut_baking][:temperature_in_c]
   end
-  # rubocop:enable Metrics/AbcSize
 
-  # rubocop:disable Metrics/AbcSize
   def test_sec_coarsening_floors_out_to_second_within_hash
     time = Time.at(1_046_684_800, 123_456_789, :nsec)
     timed_hash = make_timed_hash time
@@ -76,7 +73,6 @@ class HashesEqualTimeCoarsernerTest < Minitest::Test
     # Other fields are still untouched
     assert_equal 180, coarsened_timed_hash[:donut_baking][:temperature_in_c]
   end
-  # rubocop:enable Metrics/AbcSize
 
   private
 

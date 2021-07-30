@@ -28,7 +28,6 @@ $LOAD_PATH.unshift File.expand_path('../lib', __dir__)
 require 'hashes_equal'
 
 require 'minitest/autorun'
-require 'byebug'
 require 'mocha/minitest'
 require 'minitest/reporters'
 

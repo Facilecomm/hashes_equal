@@ -6,7 +6,8 @@ Metrics/ClassLength:
   Enabled: false
 
 Metrics/MethodLength:
-  Max: 15
+  Max: 27
+
 # Long helpers are properly not ideal
 # So keeping it disabled for now
 # Uncomment and justify if needed

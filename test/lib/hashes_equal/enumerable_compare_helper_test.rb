@@ -51,22 +51,22 @@ class EnumerableCompareHelperTest < Minitest::Test
 
   ALTERNATIVE_BEATLES = [
     { firstname: 'John', lastname: 'Lennon' },
-    { firstname: 'Paul', lastname: 'McCartney' },
+    { firstname: 'Paul', lastname: 'MacCartney' },
     { firstname: 'Ringo', lastname: 'Starr' },
     { firstname: 'George', lastname: 'Harrison' }
   ].freeze
 
-  # rubocop:disable Metrics/MethodLength
   def test_disagreement_in_arrays
     expected_beatles = THEORETICAL_BEATLES
     actual_beatles = ALTERNATIVE_BEATLES
-
+    @did_raise = false
     begin
       assert_enumerable_equal(
         expected_beatles,
         actual_beatles
       )
     rescue Minitest::Assertion => e
+      @did_raise = true
       assert_equal(
         "-#{expected_beatles}",
         e.message.split("\n").last(2).first
@@ -76,8 +76,8 @@ class EnumerableCompareHelperTest < Minitest::Test
         e.message.split("\n").last
       )
     end
+    assert @did_raise
   end
-  # rubocop:enable Metrics/MethodLength
 
   def test_missing_key_non_verbose
     @expected_enum = { a: 1 }
@@ -121,12 +121,129 @@ class EnumerableCompareHelperTest < Minitest::Test
     )
   end
 
-  ######################################################
-  # We would probably prefer to get to a disagreement
-  # but this what we get from Hashdiff
-  # Let us see if this is fixable within Hashdiff
-  # https://github.com/liufengyun/hashdiff/issues/81
-  # and if not consider fixing it in the present gem
+  def test_time_disagreement
+    time = Time.at(1_046_684_800, 123_456_789, :nsec, in: '+00:00')
+    other_time = Time.at(1_046_684_800, 999, :nsec, in: '+00:00')
+    @expected_enum = { created_at: time }
+    @actual_enum = { created_at: other_time }
+    @did_raise = false
+    begin
+      assert_enumerable_equal(
+        expected_enum,
+        actual_enum
+      )
+    rescue Minitest::Assertion => e
+      @did_raise = true
+      actual_split_message = e.message.split("\n")[4..]
+      assert_equal(
+        [
+          'No visible difference in the Hash#inspect output.',
+          'You should look at the implementation of #== on Hash or its members.', # rubocop:disable Layout/LineLength
+          '{:created_at=>2003-03-03 09:46:40 +0000}'
+        ],
+        actual_split_message
+      )
+    end
+    assert @did_raise
+  end
+
+  def test_time_agreement_due_to_coarsening_to_second
+    time = Time.at(1_046_684_800, 1, :nsec)
+    other_time = Time.at(1_046_684_800, 999_999_999, :nsec)
+    @expected_enum = { created_at: time }
+    @actual_enum = { created_at: other_time }
+    assert_time_aware_enumerable_equal(
+      expected_enum,
+      actual_enum,
+      time_granularity: :sec
+    )
+  end
+
+  def test_time_agreement_due_to_coarsening_to_microsecond
+    time = Time.at(1_046_684_800, 123_456_000, :nsec)
+    other_time = Time.at(1_046_684_800, 123_456_999, :nsec)
+    @expected_enum = { created_at: time }
+    @actual_enum = { created_at: other_time }
+    assert_time_aware_enumerable_equal(
+      expected_enum,
+      actual_enum,
+      time_granularity: :usec
+    )
+  end
+
+  def test_time_agreement_due_to_coarsening_to_second_complex_case
+    time = Time.at(1_046_684_800, 1, :nsec)
+    other_time = Time.at(1_046_684_800, 999_999_999, :nsec)
+    @expected_enum = {
+      donut_baking: {
+        started_at: time,
+        temperature_in_c: 180,
+        intermediate_times: [time + 1, time + 2]
+      }
+    }
+    @actual_enum = {
+      donut_baking: {
+        started_at: other_time,
+        temperature_in_c: 180,
+        intermediate_times: [other_time + 1, other_time + 2]
+      }
+    }
+    assert_time_aware_enumerable_equal(
+      expected_enum,
+      actual_enum,
+      time_granularity: :sec
+    )
+  end
+
+  def test_time_agreement_due_to_coarsening_to_microsecond_complex_case
+    time = Time.at(1_046_684_800, 123_456_000, :nsec)
+    other_time = Time.at(1_046_684_800, 123_456_999, :nsec)
+    @expected_enum = {
+      donut_baking: {
+        started_at: time,
+        temperature_in_c: 180,
+        intermediate_times: [time + 1, time + 2]
+      }
+    }
+    @actual_enum = {
+      donut_baking: {
+        started_at: other_time,
+        temperature_in_c: 180,
+        intermediate_times: [other_time + 1, other_time + 2]
+      }
+    }
+    assert_time_aware_enumerable_equal(
+      expected_enum,
+      actual_enum,
+      time_granularity: :usec
+    )
+  end
+
+  def test_time_granularity_should_be_whitelisted
+    time = Time.at(1_046_684_800, 1, :nsec)
+    other_time = Time.at(1_046_684_800, 999_999_999, :nsec)
+    @expected_enum = { created_at: time }
+    @actual_enum = { created_at: other_time }
+
+    error = assert_raises HashesEqual::TimeCoarsener::InvalidTimeGranularity do
+      assert_time_aware_enumerable_equal(
+        expected_enum,
+        actual_enum,
+        time_granularity: :min
+      )
+    end
+    assert_equal(
+      ':min is not a valid time_granularity. Valid values are: [:sec, :usec]',
+      error.message
+    )
+  end
+
+  # ######################################################
+  # # We would probably prefer to get to a disagreement
+  # # but this what we get from Hashdiff
+  # # Let us see if this is fixable within Hashdiff
+  # # https://github.com/liufengyun/hashdiff/issues/81
+  # # and if not consider fixing it in the present gem
   def test_compare_arrays_disagreement
     @expected_enum = ('a'..'e').to_a
     @actual_enum = ('a'..'d').to_a + ['z']
@@ -138,7 +255,7 @@ class EnumerableCompareHelperTest < Minitest::Test
       ].join("\n")
     )
   end
-  #########################################################
+  # #########################################################
 
   def test_both_spurious_and_missing_key
     @expected_enum = { a: 1 }
@@ -215,15 +332,20 @@ class EnumerableCompareHelperTest < Minitest::Test
   end
 
   def assert_enumerable_mismatch(message:)
-    assert_enumerable_equal(
-      expected_enum,
-      actual_enum
-    )
-  rescue Minitest::Assertion => e
-    assert_equal(
-      (ANSI.white { "\n" + message } + '.').split("\n"),
-      e.message.split("\n")[0..-3]
-    )
+    begin
+      @did_raise = false
+      assert_enumerable_equal(
+        expected_enum,
+        actual_enum
+      )
+    rescue Minitest::Assertion => e
+      @did_raise = true
+      assert_equal(
+        (ANSI.white { "\n" + message } + '.').split("\n"),
+        e.message.split("\n")[0..-3]
+      )
+    end
+    assert @did_raise
   end
 
   def assert_hashes_match
@@ -264,6 +386,15 @@ class EnumerableCompareHelperTest < Minitest::Test
       "values for #{key} differ",
       "expected: #{ANSI.green { exp_val.inspect }}",
       "actual: #{ANSI.red { act_val.inspect }}"
+    ].join("\n\t")
+  end
+
+  def extended_value_disagreement_message(key, exp_val, act_val, additional)
+    [
+      "values for #{key} differ",
+      "expected: #{ANSI.green { exp_val.inspect }}",
+      "actual: #{ANSI.red { act_val.inspect }}",
+      additional
     ].join("\n\t")
   end
 end

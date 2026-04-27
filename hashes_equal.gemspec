@@ -5,7 +5,7 @@
 # rubocop:disable Gemspec/RequireMFA
 Gem::Specification.new do |spec|
   spec.name          = 'hashes_equal'
-  spec.version       = '0.2.3'
+  spec.version       = '0.3.1'
   spec.authors       = ['Shippingbo']
   spec.email         = ['tech@facilecomm.com']
 

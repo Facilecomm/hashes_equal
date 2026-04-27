@@ -2,6 +2,7 @@
 
 require 'hashes_equal/hash_diff_displayer'
 require 'hashes_equal/hash_almost_diff_displayer'
+require 'hashes_equal/hash_rounded_diff_displayer'
 
 module HashesEqual
   module HashCompareHelper
@@ -23,6 +24,18 @@ module HashesEqual
         actual: actual,
         tolerance: tolerance,
         strict: strict
+      )
+
+      result = displayer.call
+
+      assert displayer.diff.empty?, result
+    end
+
+    def assert_rounded_hashes_equal(expected, actual, precision:)
+      displayer = HashRoundedDiffDisplayer.new(
+        expected: expected,
+        actual: actual,
+        precision: precision
       )
 
       result = displayer.call

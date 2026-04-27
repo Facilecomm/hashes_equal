@@ -10,10 +10,11 @@ module HashesEqual
 
     class UnprocessableHashdiff < ArgumentError; end
 
-    def initialize(expected:, actual:, diff_options: {})
+    def initialize(expected:, actual:, diff_options: {}, &comparison_block)
       @expected = expected
       @actual = actual
       @diff_options = diff_options
+      @comparison_block = comparison_block
       assert_send :expected
       assert_send :actual
       assert_send :diff_options
@@ -34,7 +35,12 @@ module HashesEqual
 
     private
 
-    attr_reader :expected, :actual, :diff_options
+    attr_reader(
+      :expected,
+      :actual,
+      :diff_options,
+      :comparison_block
+    )
 
     def check_args
       # Add specific checks if needed
@@ -47,7 +53,7 @@ module HashesEqual
     end
 
     def perform_diff_computation
-      Hashdiff.diff(expected, actual, diff_options)
+      Hashdiff.diff(expected, actual, diff_options, &comparison_block)
     end
 
     def formatted_diff

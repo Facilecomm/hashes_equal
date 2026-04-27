@@ -1,0 +1,54 @@
+version: 2.1
+
+executors:
+  ruby:
+    docker:
+      - image: cimg/ruby:3.4.6
+    working_directory: ~/project
+
+commands:
+  bundle_install:
+    steps:
+      - restore_cache:
+          keys:
+            - v1-bundle-{{ checksum "Gemfile.lock" }}
+            - v1-bundle-
+      - run:
+          name: Bundle install
+          command: |
+            bundle config set path vendor/bundle
+            bundle install --jobs=4 --retry=3
+      - save_cache:
+          key: v1-bundle-{{ checksum "Gemfile.lock" }}
+          paths:
+            - vendor/bundle
+
+jobs:
+  lint:
+    executor: ruby
+    steps:
+      - checkout
+      - bundle_install
+      - run:
+          name: Rubocop
+          command: make lint
+
+  test:
+    executor: ruby
+    steps:
+      - checkout
+      - bundle_install
+      - run:
+          name: Tests
+          command: make tests
+      - store_test_results:
+          path: tmp/tests/reports
+      - store_artifacts:
+          path: coverage/
+
+workflows:
+  version: 2
+  build:
+    jobs:
+      - lint
+      - test

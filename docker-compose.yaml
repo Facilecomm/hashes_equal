@@ -1,0 +1,15 @@
+services:
+  hashes_equal_gem:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    working_dir: /app
+    volumes:
+      - .:/app
+      - bundle_cache:/usr/local/bundle
+    tty: true
+    stdin_open: true
+    command: echo 'ok'
+
+volumes:
+  bundle_cache:

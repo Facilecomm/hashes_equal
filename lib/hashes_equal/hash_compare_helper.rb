@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 require 'hashes_equal/hash_diff_displayer'
+require 'hashes_equal/hash_almost_diff_displayer'
 
 module HashesEqual
   module HashCompareHelper
@@ -14,6 +15,19 @@ module HashesEqual
       else
         assert expected == actual, displayable_diff
       end
+    end
+
+    def assert_hashes_almost_equal(expected, actual, tolerance:, strict: false)
+      displayer = HashAlmostDiffDisplayer.new(
+        expected: expected,
+        actual: actual,
+        tolerance: tolerance,
+        strict: strict
+      )
+
+      result = displayer.call
+
+      assert displayer.diff.empty?, result
     end
   end
 end

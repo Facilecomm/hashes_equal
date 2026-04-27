@@ -1,10 +1,11 @@
 # frozen_string_literal: true
 
-require_relative 'lib/hashes_equal/version'
+# require_relative 'lib/hashes_equal/version'
 
+# rubocop:disable Gemspec/RequireMFA
 Gem::Specification.new do |spec|
   spec.name          = 'hashes_equal'
-  spec.version       = HashesEqual::VERSION
+  spec.version       = '0.2.3'
   spec.authors       = ['Shippingbo']
   spec.email         = ['tech@facilecomm.com']
 
@@ -19,6 +20,8 @@ Gem::Specification.new do |spec|
   # spec.metadata["homepage_uri"] = spec.homepage
   # spec.metadata["source_code_uri"] = "Put your gem's public repo URL here."
   # spec.metadata["changelog_uri"] = "Put your gem's CHANGELOG.md URL here."
+
+  # spec.metadata['rubygems_mfa_required'] = 'true'
 
   # Specify which files should be added to the gem when it is released.
   # The `git ls-files -z` loads the files
@@ -37,16 +40,17 @@ Gem::Specification.new do |spec|
 
   spec.add_dependency 'hashdiff', '~> 1.0', '>= 1.0.1'
 
-  spec.add_development_dependency 'bundler', '~> 2.1', '>= 2.1.4'
-  spec.add_development_dependency 'byebug', '~> 11.1'
-  spec.add_development_dependency 'guard', '~> 2.16'
-  spec.add_development_dependency 'guard-minitest', '~> 2.4'
-  spec.add_development_dependency 'minitest', '~> 5.11'
-  spec.add_development_dependency 'minitest-reporters', '~> 1.4'
-  spec.add_development_dependency 'mocha', '~> 1.11'
-  spec.add_development_dependency 'pry', '~> 0.13'
-  spec.add_development_dependency 'rake', '~> 13.0'
-  spec.add_development_dependency 'rubocop', '0.93.1'
-  spec.add_development_dependency 'rubocop-performance', '~> 1.5'
-  spec.add_development_dependency 'simplecov', '~> 0.18.5'
+  # spec.add_development_dependency 'bundler', '~> 2.1', '>= 2.1.4'
+  # spec.add_development_dependency 'byebug', '~> 11.1'
+  # spec.add_development_dependency 'guard', '~> 2.16'
+  # spec.add_development_dependency 'guard-minitest', '~> 2.4'
+  # spec.add_development_dependency 'minitest', '~> 6.0'
+  # spec.add_development_dependency 'minitest-reporters', '~> 1.7'
+  # spec.add_development_dependency 'mocha', '~> 3.0'
+  # spec.add_development_dependency 'pry', '~> 0.13'
+  # spec.add_development_dependency 'rake', '~> 13.0'
+  # spec.add_development_dependency 'rubocop', '1.86'
+  # spec.add_development_dependency 'rubocop-performance', '~> 1.5'
+  # spec.add_development_dependency 'simplecov', '~> 0.19.0'
 end
+# rubocop:enable Gemspec/RequireMFA

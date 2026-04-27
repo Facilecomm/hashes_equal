@@ -126,25 +126,14 @@ class EnumerableCompareHelperTest < Minitest::Test
     other_time = Time.at(1_046_684_800, 999, :nsec, in: '+00:00')
     @expected_enum = { created_at: time }
     @actual_enum = { created_at: other_time }
-    @did_raise = false
-    begin
-      assert_enumerable_equal(
-        expected_enum,
-        actual_enum
+
+    assert_enumerable_mismatch(
+      message: value_disagreement_message(
+        :created_at,
+        time,
+        other_time
       )
-    rescue Minitest::Assertion => e
-      @did_raise = true
-      actual_split_message = e.message.split("\n")[4..]
-      assert_equal(
-        [
-          'No visible difference in the Hash#inspect output.',
-          'You should look at the implementation of #== on Hash or its members.', # rubocop:disable Layout/LineLength
-          '{:created_at=>2003-03-03 09:46:40 +0000}'
-        ],
-        actual_split_message
-      )
-    end
-    assert @did_raise
+    )
   end
 
   def test_time_agreement_due_to_coarsening_to_second
@@ -340,12 +329,27 @@ class EnumerableCompareHelperTest < Minitest::Test
       )
     rescue Minitest::Assertion => e
       @did_raise = true
-      assert_equal(
-        (ANSI.white { "\n" + message } + '.').split("\n"),
-        e.message.split("\n")[0..-3]
-      )
+      check_message(e, message)
+      # assert_equal(
+      #   (ANSI.white { "\n" + message } + '.').split("\n"),
+      #   e.message.split("\n")[0..-3]
+      # )
     end
     assert @did_raise
+  end
+
+  # Tests are dependent on the version of minitest we are using
+  # so we make them less brittle
+  def check_message(error, expected_message)
+    assert_equal(
+      (ANSI.white { "\n" + expected_message } + '.').split("\n"),
+      error.message.split("\n")[0..-3]
+    )
+  rescue Minitest::Assertion
+    assert_equal(
+      (ANSI.white { "\n" + expected_message } + '.').split("\n"),
+      error.message.split("\n")[0..3]
+    )
   end
 
   def assert_hashes_match

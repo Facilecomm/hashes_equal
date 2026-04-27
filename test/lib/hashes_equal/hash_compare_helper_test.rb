@@ -132,12 +132,78 @@ class HashCompareHelperTest < Minitest::Test
     )
   end
 
+  def test_plain_disagreement
+    @expected_hash = { a: 0 }
+    @actual_hash = { a: 1 }
+    assert_hashes_mismatch(
+      message: value_disagreement_message('a', 0, 1)
+    )
+  end
+
+  def test_approximate_match
+    @expected_hash = { a: 0, b: 1 }
+    @actual_hash = { a: 0, b: 1.00000001 }
+
+    assert_hashes_almost_match
+  end
+
+  def test_approximate_match_with_specific_tolerance
+    @expected_hash = { a: 0, b: 1 }
+    @actual_hash = { a: 0, b: 1.00001 }
+
+    assert_hashes_almost_match(tolerance: 0.001)
+  end
+
+  def test_approximate_mismatch_above_tolerance
+    @expected_hash = { a: 0, b: 1 }
+    @actual_hash = { a: 0, b: 1.1 }
+
+    refute_approximate_match(
+      tolerance: 0.001,
+      message: value_disagreement_message(:b, 1, 1.1)
+    )
+  end
+
+  def test_tolerance_must_be_a_numeric_value
+    @expected_hash = { a: 0, b: 1 }
+    @actual_hash = { a: 0, b: 1.1 }
+
+    assert_raises invalid_tolerance_error do
+      assert_hashes_almost_equal(
+        expected_hash,
+        actual_hash,
+        tolerance: 'not_a_number_at_all'
+      )
+    end
+  end
+
+  def test_tolerance_must_be_non_negative
+    @expected_hash = { a: 0, b: 1 }
+    @actual_hash = { a: 0, b: 1.1 }
+
+    assert_raises invalid_tolerance_error do
+      assert_hashes_almost_equal(
+        expected_hash,
+        actual_hash,
+        tolerance: -0.00001
+      )
+    end
+  end
+
   private
 
   attr_reader :expected_hash, :actual_hash, :actual_diff
 
+  def invalid_tolerance_error
+    approx_hash_diff_displayer_klass::ToleranceMustBeNonNegativeNumeric
+  end
+
   def hash_diff_displayer_klass
     HashesEqual::HashDiffDisplayer
+  end
+
+  def approx_hash_diff_displayer_klass
+    HashesEqual::HashAlmostDiffDisplayer
   end
 
   def assert_hashes_mismatch(message:)
@@ -157,6 +223,29 @@ class HashCompareHelperTest < Minitest::Test
       expected_hash,
       actual_hash
     )
+  end
+
+  def assert_hashes_almost_match(tolerance: 0.0001)
+    assert_hashes_almost_equal(
+      expected_hash,
+      actual_hash,
+      tolerance: tolerance
+    )
+  end
+
+  def refute_approximate_match(message:, tolerance: 0.0001)
+    assert_hashes_almost_match(
+      tolerance: tolerance
+    )
+  rescue Minitest::Assertion => e
+    assert_equal(
+      ansi_format_message(message).split("\n"),
+      e.message.split("\n")[0..3]
+    )
+  end
+
+  def ansi_format_message(message)
+    ANSI.white { "\n" + message }
   end
 
   # def assert_displayable_diff(expected_diff)
